@@ -1,5 +1,4 @@
 Flask==1.0.3
 gunicorn==19.4.5
 requests
-re
 shutil
