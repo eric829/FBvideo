@@ -1,8 +1,8 @@
 import requests
 import re
-from flask import Flask, request
+from flask import Flask, request, send_file,make_response
 import shutil
-
+import mimetypes
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST']) 
@@ -11,10 +11,11 @@ def download():
         res = requests.get(request.values['url'])
         s = re.search('hd_src:"(https://.*?)",',res.text)
         res2 = requests.get(s.group(1),stream =True)
-        f = open(request.values['filename']+'.mp4','wb')
-        shutil.copyfileobj(res2.raw,f)
-        f.close
-        return 'Download is finish'
+        response = make_response(res2.content)
+        mime_type = mimetypes.guess_type(request.values['filename']+'.mp4')[0]
+        response.headers['Content-Type'] = mime_type
+        response.headers['Content-Disposition'] = 'attachment; filename={}'.format(request.values['filename']+'.mp4'.encode().decode('latin-1'))
+        return response
 
     return "</br>" \
             "</br>" \
