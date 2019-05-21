@@ -1,0 +1,1 @@
+web: gunicorn FBdownload:app --log-file -
